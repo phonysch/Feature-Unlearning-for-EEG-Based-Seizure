@@ -1,0 +1,6 @@
+{
+  "dataset": "CHBMIT",
+  "datadir": "/media/lc/4b9a7817-6fe7-4576-859a-c3bee00b7e69/seizure prediction data/CHBMIT",
+  "cachedir": "/media/lc/4b9a7817-6fe7-4576-859a-c3bee00b7e69/seizure prediction data/temp data/CHBMIT/4s_30m",
+  "modeldir": "models"
+}

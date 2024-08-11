@@ -1,0 +1,6 @@
+{
+  "dataset": "Kaggle2014Pred",
+  "datadir": "/media/lc/4b9a7817-6fe7-4576-859a-c3bee00b7e69/seizure prediction data/Kaggle2014Pred",
+  "cachedir": "/media/lc/4b9a7817-6fe7-4576-859a-c3bee00b7e69/seizure prediction data/temp data/Kaggle2014Pred/4s",
+  "resultdir": "results"
+}
