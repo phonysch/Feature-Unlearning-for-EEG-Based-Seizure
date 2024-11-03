@@ -4,6 +4,9 @@ Code for Feature Unlearning for EEG-Based Seizure
 # Environment
 Please refer to requirements.txt. NOTE: please ensure the package "mne" is right version.
 
+# Dataset
+Please refer to https://physionet.org/content/chbmit/1.0.0/
+
 # Quick start
 Run "main_last_seizure_as_test.py", you could obtain the single-patient unlearning or multi-patient results.
 You'd better set the argument "loss_rate_" as a fixed value (such as [1, 1, 1]) rather than use "for Loop".
