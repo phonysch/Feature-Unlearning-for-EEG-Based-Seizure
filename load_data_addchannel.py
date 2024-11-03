@@ -9,7 +9,7 @@ from utils.group_seizure_Kaggle2014Pred import group_seizure
 from scipy.signal import resample
 import matplotlib
 from mne.io import RawArray, read_raw_edf
-from myio.save_load import save_hickle_file, load_hickle_file
+from myio.save_load import save_pickle_file, load_pickle_file
 
 
 def load_signals_Kaggle2014Pred(data_dir, target, data_type):  # 数据路径， 患者名， 数据类型（发作期或发作间期）
@@ -541,7 +541,7 @@ class PrepData:  # class PreData():
 
     def apply(self):
         filename = '%s_%s' % (self.type, self.target)
-        cache = load_hickle_file(
+        cache = load_pickle_file(
             os.path.join(self.settings['cachedir'], filename))
         if cache is not None:
             return cache
@@ -551,7 +551,7 @@ class PrepData:  # class PreData():
             x, y = self.preprocess_Kaggle(data)
         else:
             x, y = self.preprocess(data)
-        save_hickle_file(
+        save_pickle_file(
             os.path.join(self.settings['cachedir'], filename),
             [x, y])
         return x, y

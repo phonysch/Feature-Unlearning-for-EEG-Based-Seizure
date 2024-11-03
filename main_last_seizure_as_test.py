@@ -261,8 +261,16 @@ def unlearning_methods(dataset, remaining_patients, unlearning_patient, model, d
 
             return unlearned_model
         else:
+
+            name = ''
+            for ind, pat in enumerate(unlearning_patient):
+                if ind < len(unlearning_patient) - 1:
+                    name += pat + '+'
+                else:
+                    name += pat
+
             if not os.path.exists(os.path.join(path['unlearn_path'],
-                                               f'unlearned_model_para_{unlearning_patient[0]}.pth')):
+                                               f'unlearned_model_para_{name}.pth')):
                 # 0: augmentation method, 1: perturbation method, 2: original data without any method
                 augmentation_perturbation = 2
                 unlearning_loader = load_data_balance_not_mix_data(True, augmentation_perturbation, dataset, test_th,
@@ -280,7 +288,7 @@ def unlearning_methods(dataset, remaining_patients, unlearning_patient, model, d
             else:
                 unlearned_model = \
                     model.load_state_dict(torch.load(os.path.join(path['unlearn_path'],
-                                                                  f'unlearned_model_para_{unlearning_patient[0]}.pth')))
+                                                                  f'unlearned_model_para_{name}.pth')))
 
             return unlearned_model
 
@@ -474,21 +482,39 @@ if __name__ == '__main__':
                     epoch_u = 2
                     disturb_methods_influence = ['samples', 'labels', 'samples_labels']
                     label_methods_shadow = ['reverse', 'complementary']
-                    for patient in all_patients:
-                        # # skip some patients (patients whose data have already unlearned)
-                        if patient in skip_patients:
-                            print(f'skip case: {patient}\n')
+
+                    # variables for unlearning multiple patients
+                    unlearning_num_ = [1, 3]
+                    used_unlearning_num_ = unlearning_num_[0]
+
+                    for i_ in range(len(all_patients)):
+
+                        # obtain unlearning patients id
+                        unlearning_patients_ = []
+                        if i_ + used_unlearning_num_ <= len(all_patients):
+                            for j_ in range(used_unlearning_num_):
+                                unlearning_patients_.append(all_patients[i_ + j_])
+                        else:
                             continue
 
-                        unlearning_patient_ = [patient]
+                        # obtain remaining patients id
                         remaining_patients_ = deepcopy(all_patients)
-                        remaining_patients_.remove(patient)
+                        for pt in unlearning_patients_:
+                            remaining_patients_.remove(pt)
+
+                        # obtain a name for all unlearing patients
+                        unlearning_name_ = ''
+                        for ind_, pat_ in enumerate(unlearning_patients_):
+                            if ind_ < len(unlearning_patients_) - 1:
+                                unlearning_name_ += pat_ + '+'
+                            else:
+                                unlearning_name_ += pat_
 
                         # unlearn_methods_ = ['shadow states', 'influence functions', 'retrain calssifier']
                         # disturb_methods_ = ['samples', 'labels', 'samples_labels']
-                        print(f'train unlearning models, unlearning case: {patient}\n')
+                        print(f'train unlearning models, unlearning case: {unlearning_name_}\n')
                         unlearned_model_ = \
-                            unlearning_methods(used_dataset_, remaining_patients_, unlearning_patient_,
+                            unlearning_methods(used_dataset_, remaining_patients_, unlearning_patients_,
                                                used_model, device_, lr_u, epoch_u, para_pathes, used_method_,
                                                disturb_methods_influence[0], label_methods_shadow[1],
                                                th, loss_rate_)
@@ -496,8 +522,8 @@ if __name__ == '__main__':
                         torch.save(unlearned_model_.state_dict(),
                                    os.path.join(para_pathes['unlearn_path'], f'test_th_{th}_unlearned_model_para.pth'))
 
-                        print(f'evaluate the unlearned model of case: {patient}')
-                        evaluate(used_dataset_, unlearning_patient_, remaining_patients_, unlearned_model_,
+                        print(f'evaluate the unlearned model of case: {unlearning_name_}')
+                        evaluate(used_dataset_, unlearning_patients_, remaining_patients_, unlearned_model_,
                                  original_model_, device_, results_path_['unlearn'], th)
 
     print('main')
